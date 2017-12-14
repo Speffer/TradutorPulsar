@@ -1,0 +1,20 @@
+{
+  "name": "tradutorpulsar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Luísa Colombo Camargo",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "consign": "^0.1.6",
+    "express": "^4.16.2",
+    "mysql": "^2.15.0",
+    "path": "^0.12.7",
+    "request": "^2.83.0",
+    "sqlite3": "^3.1.13"
+  }
+}
