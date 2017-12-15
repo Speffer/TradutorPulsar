@@ -4,7 +4,7 @@ module.exports = app => {
     
     app.post('/api/faturas/insert', (req, res) => {
         
-        let gerar_fatura = fatura.inserirFatura(req.body);
+        let gerar_fatura = fatura.inserirFatura(req.body, req.headers.authorization);
         
         gerar_fatura.then((ret) => {
             res.send(ret);

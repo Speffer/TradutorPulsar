@@ -1,10 +1,11 @@
 const clientes = require('../controller/cliente.js');
+const auxiliar = require('../controller/auxiliarAPI.js');
 
 module.exports = app => {
     
     app.post('/api/clientes/insert', (req, res) => {
 
-        let novo_cliente = clientes.inserirCliente(req.body);
+        let novo_cliente = clientes.inserirCliente(req.body, req.headers.authorization); 
         
         novo_cliente.then((ret) => {
             res.send(ret);
@@ -17,7 +18,7 @@ module.exports = app => {
 
     app.put('/api/clientes/update', (req, res) => {
 
-        let cliente_atualizado = clientes.updateCliente(req.body);
+        let cliente_atualizado = clientes.updateCliente(req.body, req.headers.authorization);
         
         cliente_atualizado.then((ret) => {
             res.send(ret);

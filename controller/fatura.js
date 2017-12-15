@@ -15,7 +15,7 @@ let inserirFatura = (fatura) => {
                 reject('Código do cliente não recebido')
             } 
 
-            API.getToken().then((token) => {
+            API.getToken(auth).then((token) => {
 
                 console.log(fatura)
 

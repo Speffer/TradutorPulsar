@@ -16,10 +16,11 @@ let executeSQL = function(querySQL) {
                 }
         
                 resolve(id = results);
-                connection.end();
+                
             });
+            
     }); 
-    
+    connection.end();
 } 
 
 

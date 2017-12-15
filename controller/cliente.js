@@ -7,12 +7,12 @@ const config = require('../config.js');
 var urlAPI = config.url;
 var header = config.headers;
 
-let inserirCliente = (cliente) => {
+let inserirCliente = (cliente, auth) => {
     
         return new Promise(
             function (resolve, reject){  
-    
-                API.getToken().then((token) => {
+                
+                API.getToken(auth).then((token) => {
 
                     let cliente_novo = {
                         cliente: {
@@ -73,7 +73,7 @@ let updateCliente = (cliente) => {
         return new Promise(
             function(resolve, reject) {
 
-                API.getToken().then((token) => {
+                API.getToken(auth).then((token) => {
 
                     var sql = `SELECT id_new FROM Produtos.Clientes WHERE id_old = ${cliente.codigo}`;
 

@@ -4,7 +4,7 @@ module.exports = app => {
     
     app.put('/api/produtos/update', (req, res) => {
         
-        let produto_atualizado = produtos.updateProduto(req.body);
+        let produto_atualizado = produtos.updateProduto(req.body, req.headers.authorization);
         
         produto_atualizado.then((ret) => {
             res.send(ret);
@@ -16,7 +16,7 @@ module.exports = app => {
 
     app.post('/api/produtos/insert', (req, res) => {
 
-        let novo_produto = produtos.inserirProduto(req.body);
+        let novo_produto = produtos.inserirProduto(req.body, req.headers.authorization);
         
         novo_produto.then((ret) => {
             res.send(ret);

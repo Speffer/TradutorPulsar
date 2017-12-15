@@ -12,7 +12,7 @@ let inserirProduto = (produto) => {
     return new Promise(
         function (resolve, reject){  
 
-            API.getToken().then((token) => {
+            API.getToken(auth).then((token) => {
                 
                 API.getCarteiraPadrao().then((carteira) => {
 
@@ -65,7 +65,7 @@ let updateProduto = (produto) => {
                 reject('Código do produto não recebido')
             } 
         
-            API.getToken().then((token) => {
+            API.getToken(auth).then((token) => {
 
                 API.getCarteiraPadrao().then((carteira) => {
 
