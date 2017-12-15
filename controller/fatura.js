@@ -19,16 +19,22 @@ let inserirFatura = (fatura, auth) => {
 
                 console.log(fatura)
 
+                let prodaux = [];
+                for(i = 0; i < fatura.itens.length; i++) {
+                    console.log(fatura.itens[i]);
+                    prodaux.push({
+                        produto_id: fatura.itens[i].codigo_produto,
+                        quantidade: fatura.itens[i].quantidade
+                    })
+                }
+
                 let fatura_nova = {
                     boleto: {
                        vencimento: fatura.vencimento,
                        cliente_id: fatura.cliente.codigo,
                        desconto: fatura.itens.desconto
                     }, 
-                    produto: {
-                       produto_id: fatura.itens.codigo_produto,
-                       quantidade: fatura.itens.quantidade
-                    }, 
+                    produto: prodaux, 
                     carne: {
                         parcelas: fatura.parcelas
                     },              
