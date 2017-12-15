@@ -21,7 +21,7 @@ let inserirFatura = (fatura, auth) => {
 
                 let prodaux = [];
                 for(i = 0; i < fatura.itens.length; i++) {
-                    console.log(fatura.itens[i]);
+                    
                     prodaux.push({
                         produto_id: fatura.itens[i].codigo_produto,
                         quantidade: fatura.itens[i].quantidade
