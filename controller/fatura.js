@@ -6,7 +6,7 @@ const config = require('../config.js');
 var urlAPI = config.url;
 var header = config.headers;
 
-let inserirFatura = (fatura) => {
+let inserirFatura = (fatura, auth) => {
 
     return new Promise(
         function(resolve, reject) {

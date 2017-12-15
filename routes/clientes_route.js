@@ -1,5 +1,4 @@
 const clientes = require('../controller/cliente.js');
-const auxiliar = require('../controller/auxiliarAPI.js');
 
 module.exports = app => {
     

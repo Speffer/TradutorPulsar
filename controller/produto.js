@@ -7,18 +7,17 @@ const config = require('../config.js');
 var urlAPI = config.url;
 var header = config.headers;
 
-let inserirProduto = (produto) => {
+let inserirProduto = (produto, auth) => {
 
     return new Promise(
         function (resolve, reject){  
 
             API.getToken(auth).then((token) => {
                 
-                API.getCarteiraPadrao().then((carteira) => {
+                let carteira_padrao = getCarteiraPadrao(auth).then((carteira) => {
 
                     produto.carteira = carteira;
                     produto.assinatura = 0;
-                    //console.log(produto)
 
                     let options = { 
                         method: 'POST',
@@ -56,7 +55,7 @@ let inserirProduto = (produto) => {
 };
 
 
-let updateProduto = (produto) => {
+let updateProduto = (produto, auth) => {
 
     return new Promise(
         function (resolve, reject){
@@ -67,13 +66,10 @@ let updateProduto = (produto) => {
         
             API.getToken(auth).then((token) => {
 
-                API.getCarteiraPadrao().then((carteira) => {
-
                     var sql = `SELECT id_new FROM Produtos.Produtos WHERE id_old = ${produto.codigo_produto}`;
                     
                     db.executeSQL(sql).then((id) => {
 
-                        produto.carteira = carteira;
                         id_new = id[0].id_new; 
         
                         let options = { 
@@ -110,17 +106,37 @@ let updateProduto = (produto) => {
                     }).catch((err) => {
                         console.log('Erro: ', err)
                     });
-                
-                }).catch((err) => {
-                    console.log('Erro: ', err)
-                });
 
             }).catch((err) => {
                 console.log('Erro: ', err) 
             });
 
-    });
+    }); 
+};
 
+let getCarteiraPadrao = (auth) => {
+
+    return new Promise(
+        function(resolve, reject) {
+
+            API.getToken(auth).then((token) => {
+                
+                var options = { 
+                    method: 'GET',
+                    url: `${urlAPI}/api/carteira/carteirapadrao?token=${token}`,
+                    headers: header,
+                    form: { } 
+                };
+    
+                request(options,(error, response, body) => {
+                    bodyparse = JSON.parse(body);
+                    resolve(carteira = bodyparse.id); 
+                });
+            }).catch((err) => {
+                console.log('Erro: ', err)
+            });
+        }
+    );
 };
 
 module.exports = {

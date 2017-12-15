@@ -1,4 +1,4 @@
-const fatura = require('../controller/fatura.js');
+const fatura = require('../controller/fatura.js'); 
 
 module.exports = app => {
     

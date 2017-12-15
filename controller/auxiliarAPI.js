@@ -6,11 +6,11 @@ const db = require('../database/execute_db.js');
 var urlAPI = config.url;
 var header = config.headers; 
 
-function getToken(auth) {
+let getToken = (auth) => {
 
     return new Promise( 
         function(resolve, reject) {
-
+            
             let login = getEmail(auth).then((auth_final) => {
 
                 let options = { 
@@ -32,45 +32,24 @@ function getToken(auth) {
     );
 };
 
-function getCarteiraPadrao() {
-    return new Promise(
-        function(resolve, reject) {
-
-            let login = getToken(auth).then((token) => {
-                
-                var options = { 
-                    method: 'GET',
-                    url: `${urlAPI}/api/carteira/carteirapadrao?token=${token}`,
-                    headers: header,
-                    form: { } 
-                };
-    
-                request(options,(error, response, body) => {
-                    bodyparse = JSON.parse(body);
-                    resolve(carteira = bodyparse.id); 
-                });
-            }).catch((err) => {
-                console.log('Erro: ', err)
-            });
-        }
-    );
-};
-
-
 let getEmail = (auth) => {
 
     return new Promise(
         function(resolve, reject) {
-            
+
             let comtoken = auth.split(' ');
             let tokenstr = comtoken[1].split(':'); 
             let token = tokenstr[0]
             let senha = tokenstr[1].split(':');
+            
+            if((!token)||(!senha)) {
+                reject('Token ou senha inválidos.')
+            }
 
             var sql = `SELECT email FROM Produtos.Users WHERE token = '${token}'`;
 
             db.executeSQL(sql).then((emailReq) => {
-                       
+                
                 let emailOk = emailReq[0].email; 
                 
                 let auth_final = {
@@ -88,6 +67,5 @@ let getEmail = (auth) => {
 
 module.exports = {
     getToken,
-    getCarteiraPadrao,
     getEmail
 };
