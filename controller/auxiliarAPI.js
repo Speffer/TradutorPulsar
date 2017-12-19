@@ -55,7 +55,7 @@ let getEmail = (auth) => {
                 let auth_final = {
                     password: senha[0],
                     email: emailOk
-                }
+                };
     
                 resolve(auth_final);
             }).catch((err) => {

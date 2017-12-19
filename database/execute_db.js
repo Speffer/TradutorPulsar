@@ -27,3 +27,9 @@ let executeSQL = function(querySQL) {
 module.exports = {
     executeSQL
 };
+
+// executeSQL('SELECT id_new FROM Produtos.Produtos WHERE id_old').then((teste) => {
+//     console.log(teste)
+// }).catch((e) => {
+//     console.log(e)
+// })

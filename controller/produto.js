@@ -131,9 +131,14 @@ let getCarteiraPadrao = (auth) => {
                 request(options,(error, response, body) => {
                     bodyparse = JSON.parse(body);
                     resolve(carteira = bodyparse.id); 
+
+                    if(error) {
+                        reject(error);
+                    }
                 });
+                
             }).catch((err) => {
-                console.log('Erro: ', err)
+                ('Erro: ', err);
             });
         }
     );

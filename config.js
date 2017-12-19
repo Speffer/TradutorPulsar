@@ -1,6 +1,6 @@
 module.exports = {
     connect_db: {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: 3306,
         user: 'root',
         password: '',
@@ -11,5 +11,4 @@ module.exports = {
         'cache-control': 'no-cache',
         'content-type': 'application/x-www-form-urlencoded'
     }
-
-};
+}; 
