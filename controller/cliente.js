@@ -14,9 +14,7 @@ let inserirCliente = (cliente, auth) => {
                 
                 API.getToken(auth).then((token) => {
 
-                    let municipio = cliente.endereco_municipio
-                    console.log('entrou ', municipio)
-                    let ibgeCode = getIBGE_code(municipio, auth).then((ibge_code_final) => {
+                    let ibgeCode = getIBGE_code(cliente.endereco_municipio, auth).then((ibge_code_final) => {
 
                         let cliente_novo = {
                             cliente: {
@@ -116,9 +114,13 @@ let updateCliente = (cliente) => {
                             }
                         });
 
+                    }).catch((err) => {
+                        console.log('Erro: ', err)
                     });
 
 
+                }).catch((err) => {
+                    console.log('Erro: ', err)
                 });
         });
 }
@@ -132,25 +134,25 @@ let getIBGE_code = (municipio, auth) => {
 
                 var options = { 
                     method: 'GET',
-                    url: `${urlAPI}/api/utilitarios/consultacidades?token=${token}`,
+                    url: `${urlAPI}/api/utilitarios/consultacidades?token=${token}&nome_cidade=${municipio}`,
                     headers: header,
-                    form: {
-                        nome_cidade: municipio
-                    } 
+                
                 };
 
                 request(options,(error, response, body) => {
+
                     bodyparse = JSON.parse(body);
                     console.log('ahhhhh', bodyparse)
-                    resolve(ibge_code_final = bodyparse); 
-                    //[0].cidade_ibge_code
+                    resolve(ibge_code_final = bodyparse[0].cidade_ibge_code); 
+                    
                     if(error) {
                         reject(error);
                     }
                 });
 
-            })
-
+            }).catch((err) => {
+                console.log('Erro: ', err)
+            });
         });
 }
 
