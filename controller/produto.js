@@ -14,14 +14,14 @@ let inserirProduto = (produto, auth) => {
 
             API.getToken(auth).then((token) => {
                 
-                let carteira_padrao = getCarteiraPadrao(auth).then((carteira) => {
+                getCarteiraPadrao(auth).then((carteira) => {
 
                     produto.carteira = carteira;
                     produto.assinatura = 0;
 
                     let options = { 
                         method: 'POST',
-                        url: `${urlAPI}/api/produto?token=${token}`,
+                        url: ''+urlAPI+'/api/produto?token='+token+'',
                         headers: header,
                         form: produto
                     };
@@ -46,10 +46,10 @@ let inserirProduto = (produto, auth) => {
                         }
                     })
                 }).catch((err) => {
-                    console.log('Erro: ', err)
+                    reject(err);
                 });
             }).catch((err) => {
-                console.log('Erro: ', err)
+                reject(err);
             });
     });
 };
@@ -66,49 +66,55 @@ let updateProduto = (produto, auth) => {
         
             API.getToken(auth).then((token) => {
 
-                    var sql = `SELECT id_new FROM Produtos.Produtos WHERE id_old = ${produto.codigo_produto}`;
-                    
-                    db.executeSQL(sql).then((id) => {
+                var sql = 'SELECT id_produto_new FROM Produto WHERE id_produto_old = '+produto.codigo_produto+'';
 
-                        id_new = id[0].id_new; 
-        
-                        let options = { 
-                            method: 'PUT',
-                            url: `${urlAPI}/api/produto/${id_new}?token=${token}`,
-                            headers: header,
-                            form: produto
-                        };
-        
-                        request(options,(error, response, body) => {
+                db.executeSQL(sql).then((id) => {
 
-                            bodyparse = JSON.parse(body);
-                            console.log(response.statusCode)
-                            console.log(bodyparse)
+                    id_new = id[0].id_produto_new;
 
-                            if(response.statusCode == 200) {
-                                let temp = {
-                                    produtos_novo: {
-                                        'descricao' : produto.descricao,
-                                        'valor' : produto.valor
-                                    },
-                                    'status' : response.statusCode,
-                                
-                                };
-                                resolve(temp);
-                            } else if (error == null) {
-                                let fail = bodyparse
-                                reject(fail)
-                            } else {
-                                reject(error)
-                            }
-                        });
+                    produto_put = {
+                        produto_id: id_new,
+                        descricao: produto.descricao,
+                        valor: produto.valor
+                    }
 
-                    }).catch((err) => {
-                        console.log('Erro: ', err)
+                    let options = {
+                        method: 'PUT',
+                        url: ''+urlAPI+'/api/produto?token='+token+'',
+                        headers: header,
+                        form: produto_put
+                    };
+
+                    request(options,(error, response, body) => {
+
+                        bodyparse = JSON.parse(body);
+                        console.log(response.statusCode)
+                        console.log(body)
+
+                        if(response.statusCode == 200 || response.statusCode == 201) {
+                            let temp = {
+                                produtos_novo: {
+                                    'descricao': produto.descricao,
+                                    'valor': produto.valor
+                                },
+                                'status': response.statusCode
+
+                            };
+                            resolve(temp);
+                        } else if (error == null) {
+                            let fail = bodyparse;
+                            reject(fail)
+                        } else {
+                            reject(error)
+                        }
                     });
 
+                }).catch((err) => {
+                    reject(err);
+                });
+
             }).catch((err) => {
-                console.log('Erro: ', err) 
+                reject(err);
             });
 
     }); 
@@ -123,7 +129,7 @@ let getCarteiraPadrao = (auth) => {
                 
                 var options = { 
                     method: 'GET',
-                    url: `${urlAPI}/api/carteira/carteirapadrao?token=${token}`,
+                    url: ''+urlAPI+'/api/carteira/carteirapadrao?token='+token+'',
                     headers: header,
                     form: { } 
                 };
@@ -138,7 +144,7 @@ let getCarteiraPadrao = (auth) => {
                 });
                 
             }).catch((err) => {
-                ('Erro: ', err);
+                reject(err);
             });
         }
     );

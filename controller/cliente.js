@@ -8,17 +8,19 @@ var urlAPI = config.url;
 var header = config.headers;
 
 let inserirCliente = (cliente, auth) => {
-    
-        return new Promise(
+
+    return new Promise(
             function (resolve, reject){  
                 
                 API.getToken(auth).then((token) => {
 
-                    let ibgeCode = getIBGE_code(cliente.endereco_municipio, auth).then((ibge_code_final) => {
+                    getIBGE_code(cliente.endereco_municipio, auth).then((ibge_code_final) => {
 
                         let cliente_novo = {
                             cliente: {
                                nome: cliente.nome,
+                                nome_fantasia: cliente.nome,
+                                data_nascimento: cliente.data_nascimento,
                                email: cliente.email,
                                documento: cliente.documento,
                                telefone: cliente.telefone,
@@ -36,7 +38,7 @@ let inserirCliente = (cliente, auth) => {
     
                         let options = { 
                             method: 'POST',
-                            url: `${urlAPI}/api/cliente?token=${token}`,
+                            url: ''+urlAPI+'/api/cliente?token='+token+'',
                             headers: header,
                             form: cliente_novo
                         };
@@ -48,7 +50,7 @@ let inserirCliente = (cliente, auth) => {
                             console.log(bodyparse);
                         
                             if(response.statusCode == 201) {
-                                console.log(bodyparse)
+                                console.log(bodyparse);
                                 let codigo = bodyparse.codigo;
                                 let temp = {
                                     codigo,
@@ -56,42 +58,64 @@ let inserirCliente = (cliente, auth) => {
                                 };
                                 resolve(temp);
                             } else if (error == null) {
-                                let fail = bodyparse
-                                reject(fail)
+                                let fail = bodyparse;
+                                reject(fail);
                             } else {
-                                reject('Erro:', error)
+                                reject('Erro:', error);
                             }
                         });
 
                     }).catch((err) => {
-                    console.log('Erro: ', err) 
+                    reject(err);
                 });
-                    
+
                     
                 }).catch((err) => {
-                    console.log('Erro: ', err) 
+                    reject(err);
                 });
         });
  };
 
 
-let updateCliente = (cliente) => {
+let updateCliente = (cliente, auth) => {
 
-        return new Promise(
+    return new Promise(
             function(resolve, reject) {
+
+                if(!cliente.codigo) {
+                    reject('Código do produto não recebido')
+                }
 
                 API.getToken(auth).then((token) => {
 
-                    var sql = `SELECT id_new FROM Produtos.Clientes WHERE id_old = ${cliente.codigo}`;
+                    var sql = 'SELECT id_cliente_new FROM Clientes WHERE id_cliente_old = '+cliente.codigo+'';
 
                     db.executeSQL(sql).then((id) => {
-                        id_new = id[0].id_new 
+                        id_new = id[0].id_cliente_new
+
+                        cliente_put = {
+                            cliente: {
+                                nome: cliente.nome,
+                                email: cliente.email,
+                                documento: cliente.documento,
+                                telefone: cliente.telefone,
+                                celular: cliente.celular
+                            },
+                            endereco: {
+                                cep: cliente.endereco_cep,
+                                endereco: cliente.endereco_logradouro,
+                                nro: cliente.endereco_numero,
+                                bairro: cliente.endereco_bairro
+                            },
+                            cliente_id: id_new,
+                            ibge_code: ibge_code_final
+                        }
 
                         let options = { 
                             method: 'PUT',
-                            url: `${urlAPI}/api/cliente/${id_new}?token=${token}`,
+                            url: ''+urlAPI+'/api/cliente?token='+token+'',
                             headers: header,
-                            form: produto
+                            form: cliente_put
                         };
 
                         request(options,(error, response, body) => {
@@ -115,18 +139,18 @@ let updateCliente = (cliente) => {
                         });
 
                     }).catch((err) => {
-                        console.log('Erro: ', err)
+                        reject(err);
                     });
 
 
                 }).catch((err) => {
-                    console.log('Erro: ', err)
+                    reject(err);
                 });
         });
 }
 
 let getIBGE_code = (municipio, auth) => {
-
+    console.log(municipio)
     return new Promise(
         function(resolve, reject) {
             console.log(auth)
@@ -134,15 +158,15 @@ let getIBGE_code = (municipio, auth) => {
 
                 var options = { 
                     method: 'GET',
-                    url: `${urlAPI}/api/utilitarios/consultacidades?token=${token}&nome_cidade=${municipio}`,
-                    headers: header,
+                    url:''+urlAPI+'/api/utilitarios/consultacidades?token='+token+'&nome_cidade='+municipio+'',
+                    headers: header
                 
                 };
 
                 request(options,(error, response, body) => {
 
+                    console.log(body)
                     bodyparse = JSON.parse(body);
-                    console.log('ahhhhh', bodyparse)
                     resolve(ibge_code_final = bodyparse[0].cidade_ibge_code); 
                     
                     if(error) {
@@ -151,7 +175,7 @@ let getIBGE_code = (municipio, auth) => {
                 });
 
             }).catch((err) => {
-                console.log('Erro: ', err)
+                reject(err)
             });
         });
 }
